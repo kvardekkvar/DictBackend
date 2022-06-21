@@ -19,9 +19,6 @@ app = Flask(__name__)
 api = Api(app)
 
 
-print('You are not authorized to make changes in dict. \n Headers recieved: ')
-
-
 
 
 def upload_xml(d):
@@ -34,8 +31,10 @@ class Dic(Resource):
     @api.doc(description="Test method. Have fun.", params={}, namespace='XML')
     def get(self):
         return "Api running", 200
-        
-    @api.doc(security='apikey', description="Method for updating dictionary. Takes xml file as body.", params={'authorization': 'An authorization token'}, responses = {401:"Not authorized", 400: "Body is not an XML file", 200:"XML dictionary was successfully updated"})
+    
+    @api.doc(security='apikey', description="Method for updating dictionary. Takes xml file as body.", responses={401: "Not authorized", 400: "Body is not an XML file", 200: "XML dictionary was successfully updated"})
+    @api.param('authorization','An authorization token', _in='header', required=1)
+    
     def post(self):
         if request.headers.get('authorization') != 'BlimpEaterDict':
             return 'You are not authorized to make changes in dict.', 401
